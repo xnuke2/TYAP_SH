@@ -19,7 +19,7 @@ namespace TYAP_SH
             else Console.WriteLine("no");
             //"VAR a,b,c:INTEGER; BEGIN a =1;READ(b,c);WRITE(a,b);FOR a=-2 TO b DO c=-a*b-1+2) END_FOR END"
             Translator translator = new Translator();
-            translator.Tranclste("VAR a,b,c:INTEGER; BEGIN a =1;READ(b,c);WRITE(a,b);FOR a=-2 TO b DO c=(-a*b-1+2) END_FOR END");
+            translator.Tranclste("VAR a,b,c:INTEGER; BEGIN ab =1;READ(b,c);WRITE(a,b);FOR a=-2 TO b DO c=(-a*b-1+2) END_FOR END");
         }
     }
 }

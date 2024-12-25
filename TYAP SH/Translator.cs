@@ -92,11 +92,19 @@ namespace TYAP_SH
         }
         public void Tranclste(string program)
         {
-            string lecsems = LecsicalAnalyze(program);
-            if (!UpDownParse(lecsems)) throw new Exception("синтаксическая ошибка");
-            string comands =lecsems.Substring(lecsems.IndexOf("BEGIN") + 5);
-            comands = comands.Remove(comands.LastIndexOf("END"));
-            Execute(comands.Split(';'));
+            try
+            {
+                string lecsems = LecsicalAnalyze(program);
+                if (!UpDownParse(lecsems)) throw new Exception("синтаксическая ошибка");
+                string comands = lecsems.Substring(lecsems.IndexOf("BEGIN") + 5);
+                comands = comands.Remove(comands.LastIndexOf("END"));
+                Execute(comands.Split(';'));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
 
 
 
