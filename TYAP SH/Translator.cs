@@ -14,7 +14,7 @@ namespace TYAP_SH
     {
         
 
-        Dictionary<string, int?> varsWithVals = new Dictionary<string, int?>();
+        
 
         
         public Translator()
@@ -151,6 +151,8 @@ namespace TYAP_SH
 
 
         }
+
+        Dictionary<string, int?> varsWithVals = new Dictionary<string, int?>();
         string[][] Execute(string[] comands)
         {
             string[][] logs=new string[comands.Length][];
@@ -210,7 +212,6 @@ namespace TYAP_SH
                     comandstmp = comandstmp.Remove(comandstmp.Length - 7, 7);
                     string eq = comandstmp.Substring(0, comandstmp.IndexOf("TO"));
                     string[] tmp = eq.Split('=');
-                    CheckVars(new string[] { tmp[0] });
                     string varName = tmp[0].Replace(" ", "");
                     string[] varsToReplace = Regex.Split(tmp[1], "[^a-z]");
                     CheckVars(varsToReplace);
