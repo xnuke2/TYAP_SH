@@ -11,8 +11,11 @@ namespace TYAP_SH
     {
         static void Main(string[] args)
         {
+            //"VAR a,b,c:INTEGER; BEGIN ab =1;READ(b,c);WRITE(a,b);FOR a=-2 TO b DO c=(-a*b-1+2) END_FOR END"
             Translator translator = new Translator();
-            translator.Tranclste("VAR a,b,c:INTEGER; BEGIN ab =1;READ(b,c);WRITE(a,b);FOR a=-2 TO b DO c=(-a*b-1+2) END_FOR END");
+            Console.WriteLine("Введите программу");
+            translator.Tranclste(Console.ReadLine());
+            Console.ReadLine();
         }
     }
 }

@@ -12,12 +12,11 @@ namespace TYAP_SH
 {
     internal class Translator
     {
-        List<string> KeyWords = new List<string>();
-        List<string[]> replaceruleslist = new List<string[]>();
-        List<string> Vars = new List<string>();
-        List<string> neterminals;
-        List<string[]> ruls = new List<string[]>();
-        Dictionary<string,int?> varsWithVals=new Dictionary<string, int?>();
+        
+
+        Dictionary<string, int?> varsWithVals = new Dictionary<string, int?>();
+
+        
         public Translator()
         {
             string[][] tmp = {
@@ -90,6 +89,49 @@ namespace TYAP_SH
             }
 
         }
+
+        
+        List<string> Vars = new List<string>();
+        List<string> terminals;
+        List<string> neterminals;
+        List<string> KeyWords = new List<string>();
+        string LecsicalAnalyze(string program)
+        {
+            List<string> tmp = new List<string>();
+            int indEnd = program.IndexOf("INTEGER");
+            if (program.IndexOf("VAR") < 0) throw new Exception("Не найдено ключевое слово VAR"); else KeyWords.Add("VAR");
+            if (indEnd < 0) throw new Exception("Неккоректный тип переменных");
+            if (program.IndexOf("BEGIN") < 0) throw new Exception("Не найдено ключевое слово BEGIN"); else KeyWords.Add("BEGIN");
+            if (program.IndexOf("END") < 0) throw new Exception("Не найдено ключевое слово END"); else KeyWords.Add("END");
+            if (program.IndexOf("FOR") >= 0)
+            {
+                if (program.IndexOf("TO") < 0) throw new Exception("Не найдено ключевое слово TO");
+                if (program.IndexOf("DO") < 0) throw new Exception("Не найдено ключевое слово DO");
+                if (program.IndexOf("END_FOR") < 0) throw new Exception("Не найдено ключевое слово END_FOR");
+                KeyWords.Add("FOR"); KeyWords.Add("TO"); KeyWords.Add("DO"); KeyWords.Add("END_FOR");
+            }
+
+            if (program.IndexOf("READ") >= 0) KeyWords.Add("READ");
+            if (program.IndexOf("WRITE") >= 0) KeyWords.Add("WRITE");
+            string vars = program.Substring(3, indEnd - 4).Replace(" ", "");
+            string[] varsNames = vars.Split(',');
+            for (int i = 0; i < varsNames.Length; i++)
+            {
+                if (!Regex.IsMatch(varsNames[i], "[a-z]")) throw new Exception("Неккоректно написано название переменной -> " + varsNames[i]);
+                if (varsNames[i].Length > 12) throw new Exception("Неккоректная длина переменной -> " + varsNames[i]);
+            }
+            for (int i = 0; i < varsNames.Length; i++)
+            {
+                for (int j = i + 1; j < varsNames.Length; j++)
+                {
+                    if (varsNames[i] == varsNames[j]) throw new Exception("Дублирующиеся названия переменных -> " + varsNames[i]);
+                }
+                varsWithVals.Add(varsNames[i], null);
+                Vars.Add(varsNames[i]);
+            }
+            return program.Replace(" ", "");
+        }
+
         public void Tranclste(string program)
         {
             try
@@ -271,42 +313,9 @@ namespace TYAP_SH
             }
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
-        string LecsicalAnalyze(string program)
-        {
-            List<string> tmp = new List<string>();
-            int indEnd = program.IndexOf("INTEGER");
-            if (program.IndexOf("VAR") < 0) throw new Exception("Не найдено ключевое слово VAR"); else KeyWords.Add("VAR");
-            if (indEnd < 0) throw new Exception("Неккоректный тип переменных");
-            if (program.IndexOf("BEGIN") < 0) throw new Exception("Не найдено ключевое слово BEGIN"); else KeyWords.Add("BEGIN");
-            if (program.IndexOf("END") < 0) throw new Exception("Не найдено ключевое слово END"); else KeyWords.Add("END");
-            if (program.IndexOf("FOR") >= 0) {
-                if (program.IndexOf("TO") < 0) throw new Exception("Не найдено ключевое слово TO");
-                if (program.IndexOf("DO") < 0) throw new Exception("Не найдено ключевое слово DO");
-                if (program.IndexOf("END_FOR") < 0) throw new Exception("Не найдено ключевое слово END_FOR");
-                KeyWords.Add("FOR"); KeyWords.Add("TO"); KeyWords.Add("DO"); KeyWords.Add("END_FOR");
-            }
 
-            if (program.IndexOf("READ") >= 0) KeyWords.Add("READ");
-            if (program.IndexOf("WRITE") >= 0) KeyWords.Add("WRITE");
-            string vars = program.Substring(3, indEnd - 4).Replace(" ", "");
-            string[] varsNames = vars.Split(',');
-            for (int i = 0; i < varsNames.Length; i++)
-            {
-                if (!Regex.IsMatch(varsNames[i], "[a-z]")) throw new Exception("Неккоректно написано название переменной -> " + varsNames[i]);
-                if (varsNames[i].Length > 12) throw new Exception("Неккоректная длина переменной -> " + varsNames[i]);
-            }
-            for (int i = 0; i < varsNames.Length; i++)
-            {
-                for (int j = i + 1; j < varsNames.Length; j++)
-                {
-                    if (varsNames[i] == varsNames[j]) throw new Exception("Дублирующиеся названия переменных -> " + varsNames[i]);
-                }
-                varsWithVals.Add(varsNames[i],null);
-                Vars.Add(varsNames[i]);
-            }
-            return program.Replace(" ", "");
-        }
-
+        List<string[]> replaceruleslist = new List<string[]>();
+        List<string[]> ruls = new List<string[]>();
         bool UpDownParse(string program)
         {
             return UpDown("<I>", program);
@@ -319,7 +328,6 @@ namespace TYAP_SH
             }
             return program;
         }
-
         bool UpDown(string tmp_program,string program) 
         { 
             string test ="^"+replaceRules(tmp_program)+"$";
